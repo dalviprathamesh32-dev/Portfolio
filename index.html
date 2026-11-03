@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Prathamesh Dalvi (Paddy) | Backend &amp; Security Engineering</title>
+<meta name="description" content="Prathamesh Dalvi (Paddy) — Third-year IT engineering student at MCT’s RGIT Mumbai. Building Python backends, zero-knowledge systems, and applied cryptography.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Prathamesh Dalvi (Paddy) | Backend &amp; Security Engineer">
+<meta property="og:description" content="Backend engineer in the making. I build secure systems, then attack them.">
+<meta name="theme-color" content="#0B0E0D">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B0E0D'/%3E%3Crect x='1' y='1' width='30' height='30' rx='5' fill='none' stroke='%23FFB020' stroke-width='2'/%3E%3Cpath d='M9 11l5 5-5 5M16 21h7' stroke='%23FFB020' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { ink:'#0B0E0D', paper:'#E8EDE9', accent:'#FFB020', surface:'#121715', surfaceHighlight:'#1C2421', danger:'#EF4444', emerald:'#10B981' },
+  fontFamily: { sans:['Inter','sans-serif'], heading:['Space Grotesk','sans-serif'], mono:['JetBrains Mono','monospace'] }
+}}}
+</script>
+<style>
+:root{color-scheme:dark}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+body{background-color:#0B0E0D;color:#E8EDE9;
+  background-image:radial-gradient(circle at 50% 0%,rgba(255,176,32,.07) 0%,transparent 50%),linear-gradient(rgba(232,237,233,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,237,233,.025) 1px,transparent 1px);
+  background-size:100% 100%,36px 36px,36px 36px}
+#site-header{padding-top:env(safe-area-inset-top,0px)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.active{opacity:1;transform:translateY(0)}
+.cursor-blink{animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.spotlight-card{position:relative;overflow:hidden}
+.spotlight-card::before{content:'';position:absolute;inset:0;background:radial-gradient(600px circle at var(--mouse-x,50%) var(--mouse-y,50%),rgba(255,176,32,.09),transparent 40%);opacity:0;transition:opacity .3s;pointer-events:none;z-index:1}
+.spotlight-card:hover::before{opacity:1}
+.flow-dash{stroke-dasharray:8 6;animation:dashMove 1.2s linear infinite}
+@keyframes dashMove{to{stroke-dashoffset:-28}}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#0B0E0D}
+::-webkit-scrollbar-thumb{background:#26302C;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#FFB020}
+::selection{background-color:#FFB020;color:#0B0E0D}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important;transition:none!important}.flow-dash,.cursor-blink{animation:none!important}}
+</style>
+</head>
+<body class="antialiased font-sans overflow-x-hidden">
+
+<div id="toast" class="fixed bottom-6 right-6 z-[120] transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-surfaceHighlight border border-accent/40 text-paper px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-mono text-xs">
+  <span class="w-2 h-2 rounded-full bg-accent animate-ping"></span>
+  <span id="toast-message">Copied to clipboard</span>
+</div>
+
+<!-- NAV -->
+<header id="site-header" class="fixed w-full top-0 z-50 bg-ink/85 backdrop-blur-md border-b border-white/5">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="#" class="flex items-center gap-2.5 group focus:outline-none">
+      <div class="w-8 h-8 rounded-lg bg-surfaceHighlight border border-white/10 group-hover:border-accent/60 flex items-center justify-center font-mono font-bold text-accent text-sm transition-colors">&gt;_</div>
+      <div>
+        <span class="font-heading font-bold text-lg tracking-tight text-paper group-hover:text-accent transition-colors">Prathamesh Dalvi</span>
+        <span class="hidden sm:inline-block ml-1.5 text-xs font-mono text-white/40">(Paddy)</span>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-white/70">
+      <a href="#projects" class="hover:text-accent transition-colors">Projects</a>
+      <a href="#philosophy" class="hover:text-accent transition-colors">How I Work</a>
+      <a href="#arsenal" class="hover:text-accent transition-colors">Stack</a>
+      <a href="#now" class="hover:text-accent transition-colors">Now</a>
+      <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">Resume</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="https://github.com/dalviprathamesh32-dev" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-surface border border-white/10 text-white/70 hover:text-accent hover:border-accent/40 transition-colors" aria-label="GitHub Profile">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <a href="#contact" class="hidden sm:inline-block px-4 py-2 rounded-lg bg-accent text-ink font-heading font-bold text-sm hover:bg-amber-400 transition-colors">Get in Touch</a>
+      <button id="menu-btn" class="md:hidden p-2 rounded-lg bg-surface border border-white/10 text-white/80 hover:text-accent transition-colors" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden md:hidden border-t border-white/10 bg-ink/95 px-6 py-4 flex-col gap-1 font-mono text-sm text-white/80">
+    <a href="#projects" class="mobile-link block py-2.5 hover:text-accent">Projects</a>
+    <a href="#philosophy" class="mobile-link block py-2.5 hover:text-accent">How I Work</a>
+    <a href="#arsenal" class="mobile-link block py-2.5 hover:text-accent">Stack</a>
+    <a href="#now" class="mobile-link block py-2.5 hover:text-accent">Now</a>
+    <a href="#contact" class="mobile-link block py-2.5 hover:text-accent">Contact</a>
+    <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="block py-2.5 text-accent">Resume (PDF) &nearr;</a>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="min-h-screen flex items-center pt-28 pb-16 relative">
+  <div class="max-w-6xl mx-auto px-6 w-full grid lg:grid-cols-12 gap-12 items-center">
+    <div class="lg:col-span-7 space-y-6 reveal active">
+      <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 border border-accent/30 bg-accent/10 text-accent text-xs font-mono rounded-full">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        <span>3rd Year IT @ MCT’s RGIT, Mumbai &bull; Open to Internships</span>
+      </div>
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-heading font-bold leading-[1.08] tracking-tight">
+        Backend engineer in the making.<br>
+        <span class="text-white/45">I build secure systems,</span>
+        <span class="text-accent">then attack them.</span>
+      </h1>
+      <p class="text-base sm:text-lg text-white/65 max-w-2xl leading-relaxed">
+        Hi, I’m <strong class="text-paper font-medium">Prathamesh Dalvi (Paddy)</strong>. I build Python backends with <span class="font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-paper">FastAPI</span>, <span class="font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-paper">Redis</span>, <span class="font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-paper">SQLite</span>, and <span class="font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded border border-white/10 text-paper">Docker</span>—focusing on zero-knowledge encryption, tamper-evident ledgers, and offline-first verification.
+      </p>
+      <div class="flex flex-wrap items-center gap-4 pt-2">
+        <a href="#projects" class="px-6 py-3.5 bg-accent text-ink font-heading font-bold rounded-xl hover:bg-amber-400 transition-all shadow-[0_0_25px_rgba(255,176,32,0.25)] flex items-center gap-2">
+          <span>Inspect Projects</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
+        <button onclick="openProjectModal('zerotrace')" class="px-6 py-3.5 bg-surface border border-white/15 text-paper font-heading font-medium rounded-xl hover:border-accent/50 hover:bg-surfaceHighlight transition-all">ZeroTrace Live Flow</button>
+      </div>
+      <div class="pt-4 grid grid-cols-3 gap-4 border-t border-white/10 max-w-lg text-xs font-mono text-white/50">
+        <div><span class="block text-accent font-bold">CORE STACK</span>Python / FastAPI / Redis</div>
+        <div><span class="block text-accent font-bold">FOCUS</span>Applied Crypto &amp; APIs</div>
+        <div><span class="block text-accent font-bold">TESTING</span>Pytest &amp; Threat Models</div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-5 reveal active">
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-gradient-to-r from-accent/30 to-amber-600/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-80 transition duration-500"></div>
+        <div class="relative bg-[#070908] rounded-2xl border border-white/15 shadow-2xl overflow-hidden">
+          <div class="bg-surfaceHighlight px-4 py-3 flex items-center justify-between border-b border-white/10">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500/80"></span><span class="w-3 h-3 rounded-full bg-amber-400/80"></span><span class="w-3 h-3 rounded-full bg-emerald/80"></span>
+            </div>
+            <div class="text-xs font-mono text-white/50"><span>zerotrace-core ~ zsh</span></div>
+            <button onclick="restartTerminal()" class="text-[11px] font-mono text-white/40 hover:text-accent transition-colors" title="Replay terminal sequence">&#x21bb; Replay</button>
+          </div>
+          <div class="p-5 font-mono text-xs sm:text-[13px] leading-relaxed min-h-[300px] sm:min-h-[320px] flex flex-col justify-between">
+            <div id="terminal-lines" class="space-y-2 break-words"></div>
+            <div class="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-white/35">
+              <span id="term-status">STATUS: EXECUTING_PIPELINE</span>
+              <span>AES-256-GCM &bull; REDIS GETDEL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="py-24 bg-surface/40 border-y border-white/5 relative">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-4 reveal">
+      <div>
+        <div class="text-xs font-mono text-accent uppercase tracking-widest mb-2">// Open Source &amp; Hackathon Builds</div>
+        <h2 class="text-3xl sm:text-4xl font-heading font-bold">Selected Projects</h2>
+      </div>
+      <p class="text-sm text-white/55 max-w-md">Each project starts from a concrete threat model. Open a card to inspect the architecture and what it does (and doesn’t) protect against.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-7">
+      <!-- ZeroTrace -->
+      <article class="spotlight-card group bg-surface border border-white/10 hover:border-accent/50 rounded-2xl p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between reveal hover:-translate-y-1.5 shadow-lg">
+        <div class="relative z-10">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-accent/15 text-accent border border-accent/30 rounded-full font-semibold">v1 Open Source &bull; v2 In Progress</span>
+            <span class="text-xs font-mono text-white/40">01</span>
+          </div>
+          <h3 class="text-2xl font-heading font-bold mb-2 group-hover:text-accent transition-colors">ZeroTrace</h3>
+          <p class="text-xs font-mono text-white/45 mb-4">Self-Destructing, Client-Side Encrypted Messages</p>
+          <p class="text-sm text-white/65 leading-relaxed mb-6">
+            Share a message once. Plaintext is encrypted in the browser via <strong class="text-paper">WebCrypto AES-256-GCM</strong>. The decryption key stays in the URL <code class="text-accent font-mono">#fragment</code>; the FastAPI server stores only ciphertext in Redis and deletes it atomically on first read via <code class="text-accent font-mono">GETDEL</code>.
+          </p>
+        </div>
+        <div class="relative z-10 space-y-5 mt-auto">
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">FastAPI</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Redis GETDEL</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">AES-256-GCM</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Docker</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Pytest</span>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex flex-col gap-2.5">
+            <button onclick="openProjectModal('zerotrace')" class="w-full py-2.5 px-4 bg-accent text-ink font-heading font-bold text-sm rounded-lg hover:bg-amber-400 transition-colors flex items-center justify-center gap-2">
+              <span>Inspect Architecture &amp; Flow</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </button>
+            <div class="flex items-center justify-between gap-2 text-xs font-mono">
+              <a href="https://github.com/dalviprathamesh32-dev/ZeroTrace" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-center text-white/80 hover:text-accent transition-colors">GitHub Repo &nearr;</a>
+              <span class="flex-1 py-2 px-3 bg-white/[0.03] border border-white/5 rounded-lg text-center text-white/40 cursor-not-allowed" title="Live deployment planned with v2 (rate limiting &amp; CSP)">Live: v2 In Progress</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TrustLayer-CV -->
+      <article class="spotlight-card group bg-surface border border-white/10 hover:border-accent/50 rounded-2xl p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between reveal hover:-translate-y-1.5 shadow-lg">
+        <div class="relative z-10">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-emerald/15 text-emerald border border-emerald/30 rounded-full font-semibold">SIH26228 &bull; Full Prototype</span>
+            <span class="text-xs font-mono text-white/40">02</span>
+          </div>
+          <h3 class="text-2xl font-heading font-bold mb-2 group-hover:text-accent transition-colors">TrustLayer-CV</h3>
+          <p class="text-xs font-mono text-white/45 mb-4">Integrity &amp; Provenance for Computer Vision Pipelines</p>
+          <p class="text-sm text-white/65 leading-relaxed mb-6">
+            Built the full prototype (backend, UI and demo) for Smart India Hackathon problem statement <strong class="text-paper">SIH26228</strong>. An offline-first layer that issues <strong class="text-paper">Ed25519-signed provenance receipts</strong> for CV inference, with replay protection and a tamper-evident, hash-chained audit ledger.
+          </p>
+        </div>
+        <div class="relative z-10 space-y-5 mt-auto">
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Python</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">FastAPI</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Ed25519</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Hash-Chained SQLite</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">React</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Docker</span>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex flex-col gap-2.5">
+            <button onclick="openProjectModal('trustlayer')" class="w-full py-2.5 px-4 bg-surfaceHighlight border border-white/15 text-paper hover:border-accent hover:text-accent font-heading font-bold text-sm rounded-lg transition-colors flex items-center justify-center gap-2">
+              <span>Inspect Threat Model &amp; Spec</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+            <a href="https://github.com/dalviprathamesh32-dev/SIH26228-TrustLayer-CV" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-center text-xs font-mono text-white/80 hover:text-accent transition-colors">View on GitHub &nearr;</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- VAJRA -->
+      <article class="spotlight-card group bg-surface border border-white/10 hover:border-accent/50 rounded-2xl p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between reveal hover:-translate-y-1.5 shadow-lg">
+        <div class="relative z-10">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-blue-500/15 text-blue-400 border border-blue-500/30 rounded-full font-semibold">SIH26106 &bull; Team Build (Backend)</span>
+            <span class="text-xs font-mono text-white/40">03</span>
+          </div>
+          <h3 class="text-2xl font-heading font-bold mb-2 group-hover:text-accent transition-colors">VAJRA</h3>
+          <p class="text-xs font-mono text-white/45 mb-4">Email Threat &amp; Forensic Intelligence Platform</p>
+          <p class="text-sm text-white/65 leading-relaxed mb-6">
+            Contributed to the FastAPI backend of a four-person team build for Smart India Hackathon problem statement <strong class="text-paper">SIH26106</strong>. Analyzes <code class="text-accent font-mono">.eml</code>/<code class="text-accent font-mono">.msg</code> emails in memory: header and hop tracing, SPF/DKIM/DMARC checks, GeoIP origin mapping and explainable risk scoring.
+          </p>
+        </div>
+        <div class="relative z-10 space-y-5 mt-auto">
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">FastAPI</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Email Forensics</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">GeoIP</span>
+            <span class="px-2.5 py-1 text-xs font-mono bg-white/5 border border-white/10 rounded-md text-white/80">Python</span>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex flex-col gap-2.5">
+            <button onclick="openProjectModal('vajra')" class="w-full py-2.5 px-4 bg-surfaceHighlight border border-white/15 text-paper hover:border-accent hover:text-accent font-heading font-bold text-sm rounded-lg transition-colors flex items-center justify-center gap-2">
+              <span>Inspect Forensic Pipeline</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+            <a href="https://github.com/dalviprathamesh32-dev/SIH26106-Vajra" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-center text-xs font-mono text-white/80 hover:text-accent transition-colors">View on GitHub &nearr;</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section id="philosophy" class="py-24 relative">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-14 reveal">
+      <div class="text-xs font-mono text-accent uppercase tracking-widest mb-2">// Engineering Mindset</div>
+      <h2 class="text-3xl sm:text-4xl font-heading font-bold">Build It. Attack It. Fix It.</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-surface border border-white/10 rounded-2xl p-7 reveal hover:border-accent/40 transition-colors">
+        <div class="w-10 h-10 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center font-mono font-bold text-accent text-sm mb-5">01</div>
+        <h3 class="text-xl font-heading font-bold mb-3">Clean Layer Separation</h3>
+        <p class="text-white/65 text-sm leading-relaxed">HTTP routes never talk to Redis directly, and service code knows nothing about HTTP status codes. Pydantic schemas validate every request at the boundary.</p>
+      </div>
+      <div class="bg-surface border border-white/10 rounded-2xl p-7 reveal hover:border-accent/40 transition-colors">
+        <div class="w-10 h-10 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center font-mono font-bold text-accent text-sm mb-5">02</div>
+        <h3 class="text-xl font-heading font-bold mb-3">Adversarial Threat Modeling</h3>
+        <p class="text-white/65 text-sm leading-relaxed">I document what my systems protect against, and where their limits lie. From link-preview bots burning single-use links to replayed receipts and tampered ledgers.</p>
+      </div>
+      <div class="bg-surface border border-white/10 rounded-2xl p-7 reveal hover:border-accent/40 transition-colors">
+        <div class="w-10 h-10 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center font-mono font-bold text-accent text-sm mb-5">03</div>
+        <h3 class="text-xl font-heading font-bold mb-3">Automated Verification</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Endpoints are backed by automated <code class="text-accent font-mono">pytest</code> suites using in-memory fixtures, covering happy paths, single-read 404 guarantees, and oversize payload rejection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="arsenal" class="py-24 bg-surface/40 border-y border-white/5 relative">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="mb-12 reveal">
+      <div class="text-xs font-mono text-accent uppercase tracking-widest mb-2">// Technical Stack</div>
+      <h2 class="text-3xl sm:text-4xl font-heading font-bold">Core Arsenal</h2>
+      <p class="text-sm text-white/55 mt-2">Tools I’ve actually used in the projects above.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+      <div class="bg-surface border border-white/10 rounded-2xl p-6">
+        <div class="text-xs font-mono text-accent mb-3 uppercase">01 / Backend &amp; APIs</div>
+        <ul class="space-y-2.5 text-sm font-mono text-white/80">
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Python 3.10+</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>FastAPI &amp; Uvicorn</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Pydantic V2 Validation</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>REST API Design</li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-white/10 rounded-2xl p-6">
+        <div class="text-xs font-mono text-accent mb-3 uppercase">02 / Data &amp; Storage</div>
+        <ul class="space-y-2.5 text-sm font-mono text-white/80">
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Redis (In-Memory / TTL)</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>SQLite (Hash-Chained)</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>In-Memory Case Stores</li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-white/10 rounded-2xl p-6">
+        <div class="text-xs font-mono text-accent mb-3 uppercase">03 / Security &amp; Crypto</div>
+        <ul class="space-y-2.5 text-sm font-mono text-white/80">
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>AES-256-GCM (WebCrypto)</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Ed25519 Signatures</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>SHA-256 Hash Chaining</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Email Header Forensics</li>
+        </ul>
+      </div>
+      <div class="bg-surface border border-white/10 rounded-2xl p-6">
+        <div class="text-xs font-mono text-accent mb-3 uppercase">04 / Infra &amp; Testing</div>
+        <ul class="space-y-2.5 text-sm font-mono text-white/80">
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Docker &amp; Compose</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Pytest &amp; httpx</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Linux (Ubuntu / WSL2)</li>
+          <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Git &amp; GitHub</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOW -->
+<section id="now" class="py-24 relative">
+  <div class="max-w-4xl mx-auto px-6 reveal">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <div class="text-xs font-mono text-accent uppercase tracking-widest mb-2">// Status Log</div>
+        <h2 class="text-3xl font-heading font-bold">What I’m Building &amp; Learning Now</h2>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald/10 border border-emerald/30 text-emerald text-xs font-mono"><span class="w-2 h-2 rounded-full bg-emerald animate-ping"></span>Active Sprint</span>
+    </div>
+    <div class="bg-surface border border-white/10 rounded-2xl p-7 sm:p-9 space-y-6 relative overflow-hidden">
+      <div class="flex gap-4 items-start">
+        <div class="px-2.5 py-1 rounded bg-accent/15 border border-accent/30 text-accent font-mono text-xs font-bold shrink-0 mt-0.5">BUILD</div>
+        <div><h3 class="text-white font-heading font-bold text-lg">ZeroTrace v2</h3>
+        <p class="text-white/65 text-sm mt-1 leading-relaxed">v2 is in progress.</p></div>
+      </div>
+      <div class="flex gap-4 items-start border-t border-white/10 pt-6">
+        <div class="px-2.5 py-1 rounded bg-white/5 border border-white/15 text-white/70 font-mono text-xs font-bold shrink-0 mt-0.5">NEXT</div>
+        <div><h3 class="text-white font-heading font-bold text-lg">A surprise <span class="text-accent">&#9679;&#9679;&#9679;</span></h3>
+        <p class="text-white/65 text-sm mt-1 leading-relaxed">Something new is brewing in the lab. Not ready to show yet. I’ll share it when it’s real.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-24 bg-surface/40 border-t border-white/5 relative">
+  <div class="max-w-4xl mx-auto px-6 reveal">
+    <div class="bg-gradient-to-br from-surfaceHighlight to-surface border border-accent/30 rounded-3xl p-8 sm:p-12 text-center shadow-2xl relative overflow-hidden">
+      <div class="inline-block px-3 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent font-mono text-xs mb-4">Open to Backend &amp; Security Internships</div>
+      <h2 class="text-3xl sm:text-5xl font-heading font-bold mb-4">Let’s build resilient systems.</h2>
+      <p class="text-white/65 text-base sm:text-lg max-w-xl mx-auto mb-8 leading-relaxed">Looking for an intern who cares about clean backend architecture, automated testing, and real threat models? Reach out directly.</p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="mailto:dalviprathamesh32@gmail.com" class="px-7 py-4 bg-accent text-ink font-heading font-bold rounded-xl hover:bg-amber-400 transition-all shadow-lg flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          <span class="break-all">dalviprathamesh32@gmail.com</span>
+        </a>
+        <button onclick="copyEmail()" class="px-5 py-4 bg-ink/80 border border-white/15 text-paper hover:border-accent hover:text-accent font-mono text-xs sm:text-sm rounded-xl transition-colors">Copy Email</button>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-3 mt-6 font-mono text-xs sm:text-sm">
+        <a href="https://www.linkedin.com/in/buildwithpaddy" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-ink/60 border border-white/15 rounded-lg text-white/80 hover:text-accent hover:border-accent/50 transition-colors">LinkedIn &nearr;</a>
+        <a href="https://github.com/dalviprathamesh32-dev" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-ink/60 border border-white/15 rounded-lg text-white/80 hover:text-accent hover:border-accent/50 transition-colors">GitHub &nearr;</a>
+        <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-ink/60 border border-white/15 rounded-lg text-white/80 hover:text-accent hover:border-accent/50 transition-colors">Resume (PDF) &nearr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="py-10 border-t border-white/10 text-xs font-mono text-white/45">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div>&copy; <span id="year"></span> Prathamesh Dalvi (Paddy) &bull; MCT’s RGIT, Mumbai</div>
+    <div class="flex items-center gap-6">
+      <a href="https://github.com/dalviprathamesh32-dev" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">GitHub &nearr;</a>
+      <a href="https://www.linkedin.com/in/buildwithpaddy" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">LinkedIn &nearr;</a>
+      <a href="mailto:dalviprathamesh32@gmail.com" class="hover:text-accent transition-colors">Email</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ZeroTrace interactive flow (injected into the ZeroTrace popup) -->
+<template id="flow-template">
+  <div class="bg-[#080B0A] border border-white/10 rounded-xl p-4 sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-white/10 font-mono text-xs">
+      <div class="flex items-center gap-2"><span id="svg-stage-dot" class="w-2.5 h-2.5 rounded-full bg-accent"></span><span id="svg-stage-title" class="text-paper font-bold">STAGE 01</span></div>
+      <span id="svg-http-badge" class="px-2.5 py-0.5 rounded bg-accent/15 text-accent border border-accent/30">WebCrypto</span>
+    </div>
+    <div class="flex flex-wrap gap-2 mb-3">
+      <button onclick="selectFlowStep(0, true)" class="flow-step-btn" data-step="0"><span class="step-badge">01</span> Encrypt</button>
+      <button onclick="selectFlowStep(1, true)" class="flow-step-btn" data-step="1"><span class="step-badge">02</span> Store</button>
+      <button onclick="selectFlowStep(2, true)" class="flow-step-btn" data-step="2"><span class="step-badge">03</span> Link</button>
+      <button onclick="selectFlowStep(3, true)" class="flow-step-btn" data-step="3"><span class="step-badge">04</span> Reveal</button>
+      <button onclick="selectFlowStep(4, true)" class="flow-step-btn" data-step="4"><span class="step-badge">05</span> Gone</button>
+      <button id="sim-btn" onclick="toggleFlowAutoPlay()" class="ml-auto px-3 py-1.5 rounded-lg bg-accent/15 border border-accent/40 text-accent hover:bg-accent hover:text-ink font-mono text-[11px] font-bold transition-all flex items-center gap-2">
+        <span id="sim-indicator" class="w-2 h-2 rounded-full bg-accent animate-ping"></span>
+        <span id="sim-btn-text">Auto-Cycling (Pause)</span>
+      </button>
+    </div>
+    <div class="overflow-x-auto">
+      <svg viewBox="0 0 680 280" class="w-full h-auto min-w-[480px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="672" height="272" rx="12" fill="#0B0E0D" stroke="#1F2925" stroke-width="1.5"/>
+        <g>
+          <rect x="24" y="30" width="175" height="220" rx="10" fill="#121715" stroke="#FFB020" stroke-width="2" id="rect-browser"/>
+          <text x="40" y="56" fill="#E8EDE9" font-family="Space Grotesk, sans-serif" font-weight="bold" font-size="13">BROWSER (CLIENT)</text>
+          <rect x="38" y="70" width="147" height="44" rx="6" fill="#1C2421" stroke="#2D3834"/>
+          <text x="48" y="88" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="10">AES-256-GCM Engine</text>
+          <text x="48" y="104" fill="#E8EDE9" font-family="JetBrains Mono, monospace" font-size="10" id="svg-browser-state">Plaintext -&gt; Cipher</text>
+          <rect x="38" y="128" width="147" height="62" rx="6" fill="#231D10" stroke="#FFB020" stroke-dasharray="3 3"/>
+          <text x="48" y="147" fill="#FFB020" font-family="JetBrains Mono, monospace" font-weight="bold" font-size="10">KEY: #fragment</text>
+          <text x="48" y="163" fill="#D1D5DB" font-family="JetBrains Mono, monospace" font-size="9">Never sent over HTTP</text>
+          <text x="48" y="178" fill="#10B981" font-family="JetBrains Mono, monospace" font-size="9">Local Memory Only</text>
+          <text x="40" y="232" fill="#6B7280" font-family="JetBrains Mono, monospace" font-size="9">Zero-Knowledge Boundary</text>
+        </g>
+        <g>
+          <path d="M 205 95 L 285 95" stroke="#374151" stroke-width="2" id="line-post"/>
+          <polygon points="285,91 293,95 285,99" fill="#374151"/>
+          <text x="212" y="85" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="9">POST /message</text>
+        </g>
+        <g>
+          <path d="M 290 175 L 210 175" stroke="#374151" stroke-width="2" id="line-get"/>
+          <polygon points="210,171 202,175 210,179" fill="#374151"/>
+          <text x="212" y="194" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="9">GET /message/{id}</text>
+        </g>
+        <g>
+          <rect x="298" y="45" width="135" height="190" rx="10" fill="#121715" stroke="#2D3834" stroke-width="2" id="rect-fastapi"/>
+          <text x="314" y="72" fill="#E8EDE9" font-family="Space Grotesk, sans-serif" font-weight="bold" font-size="13">FastAPI API</text>
+          <text x="314" y="90" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="9">Stateless HTTP Layer</text>
+          <rect x="312" y="106" width="107" height="52" rx="6" fill="#1C2421" stroke="#2D3834"/>
+          <text x="320" y="125" fill="#FFB020" font-family="JetBrains Mono, monospace" font-size="9">Pydantic Schema</text>
+          <text x="320" y="142" fill="#D1D5DB" font-family="JetBrains Mono, monospace" font-size="9">Max 20,000 chars</text>
+          <text x="314" y="212" fill="#6B7280" font-family="JetBrains Mono, monospace" font-size="9">Sees 0 Keys</text>
+        </g>
+        <g>
+          <path d="M 438 140 L 492 140" stroke="#374151" stroke-width="2" id="line-redis"/>
+          <polygon points="492,136 500,140 492,144" fill="#374151"/>
+          <text x="444" y="128" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="9">SETEX / GETDEL</text>
+        </g>
+        <g>
+          <rect x="504" y="45" width="152" height="190" rx="10" fill="#121715" stroke="#2D3834" stroke-width="2" id="rect-redis"/>
+          <text x="520" y="72" fill="#E8EDE9" font-family="Space Grotesk, sans-serif" font-weight="bold" font-size="13">REDIS RAM DB</text>
+          <text x="520" y="90" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="9">In-Memory Ephemeral</text>
+          <rect x="518" y="106" width="124" height="62" rx="6" fill="#1C2421" stroke="#2D3834" id="redis-slot-box"/>
+          <text x="526" y="126" fill="#E8EDE9" font-family="JetBrains Mono, monospace" font-size="9" id="redis-slot-id">id: "7x9K2m"</text>
+          <text x="526" y="142" fill="#9CA3AF" font-family="JetBrains Mono, monospace" font-size="9" id="redis-slot-val">cipher: "8f9a..."</text>
+          <text x="526" y="158" fill="#FFB020" font-family="JetBrains Mono, monospace" font-size="9" id="redis-slot-ttl">TTL: 3600s</text>
+          <text x="520" y="212" fill="#10B981" font-family="JetBrains Mono, monospace" font-size="9" id="redis-footer-status">Single-Use Atomic</text>
+        </g>
+      </svg>
+    </div>
+    <div class="mt-3 bg-ink border border-white/10 rounded-lg p-3 font-mono text-xs">
+      <div class="text-white/40 mb-1 flex justify-between"><span>LIVE WIRE / MEMORY STATE</span><span id="wire-step-counter" class="text-accent">STEP 1 OF 5</span></div>
+      <div id="wire-payload-text" class="text-emerald break-all"></div>
+    </div>
+  </div>
+</template>
+
+<!-- MODAL -->
+<div id="project-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 bg-ink/90 backdrop-blur-md" onclick="closeProjectModal()"></div>
+  <div id="project-modal-box" class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-surface border border-white/15 rounded-2xl shadow-2xl z-10 transform scale-95 transition-transform duration-300">
+    <div class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md px-6 sm:px-8 py-5 border-b border-white/10 flex items-center justify-between gap-4">
+      <div>
+        <span id="modal-badge" class="px-2.5 py-0.5 text-[11px] font-mono bg-accent/15 text-accent border border-accent/30 rounded-full">Architecture Deep-Dive</span>
+        <h2 id="modal-title" class="text-xl sm:text-2xl font-heading font-bold mt-1">ZeroTrace</h2>
+      </div>
+      <button onclick="closeProjectModal()" class="p-2 rounded-lg bg-surfaceHighlight border border-white/10 text-white/60 hover:text-accent transition-colors shrink-0" aria-label="Close modal">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div id="modal-body" class="p-6 sm:p-8 space-y-8"></div>
+  </div>
+</div>
+
+<script>
+// Footer year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Mobile menu
+(function () {
+  var btn = document.getElementById('menu-btn');
+  var menu = document.getElementById('mobile-menu');
+  var icon = document.getElementById('menu-icon');
+  function setOpen(open) {
+    menu.classList.toggle('hidden', !open);
+    menu.classList.toggle('flex', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    icon.setAttribute('d', open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16');
+  }
+  btn.addEventListener('click', function () { setOpen(menu.classList.contains('hidden')); });
+  document.querySelectorAll('.mobile-link').forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+  window.addEventListener('resize', function () { if (window.innerWidth >= 768) setOpen(false); });
+})();
+
+// Spotlight hover
+document.querySelectorAll('.spotlight-card').forEach(function (card) {
+  card.addEventListener('mousemove', function (e) {
+    var r = card.getBoundingClientRect();
+    card.style.setProperty('--mouse-x', (e.clientX - r.left) + 'px');
+    card.style.setProperty('--mouse-y', (e.clientY - r.top) + 'px');
+  });
+});
+
+// Scroll reveal
+var revealObserver = new IntersectionObserver(function (entries) {
+  entries.forEach(function (en) { if (en.isIntersecting) en.target.classList.add('active'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(function (el) { revealObserver.observe(el); });
+
+// Hero terminal loop
+var terminalLinesContainer = document.getElementById('terminal-lines');
+var termStatus = document.getElementById('term-status');
+var terminalScript = [
+  { text: "$ zerotrace init --cipher aes-256-gcm", color: "text-paper font-bold", delayAfter: 350 },
+  { text: "> Generating 256-bit key in WebCrypto API...", color: "text-white/70", delayAfter: 300 },
+  { text: "> Key pinned to URL #fragment (0 bytes sent to server)", color: "text-accent", delayAfter: 400 },
+  { text: "$ curl -s -X POST /message -d '{\"ciphertext\":\"8f9a2b...\"}'", color: "text-paper font-bold", delayAfter: 350 },
+  { text: "> Stored in Redis [TTL: 3600s] -> id: 7x9K2m", color: "text-emerald", delayAfter: 400 },
+  { text: "$ curl -s -X GET /message/7x9K2m", color: "text-paper font-bold", delayAfter: 350 },
+  { text: "> Atomic GETDEL executed. Ciphertext deleted from Redis.", color: "text-amber-400", delayAfter: 300 },
+  { text: "> pytest -v: 6 passed.", color: "text-emerald font-bold", delayAfter: 2600 }
+];
+var termTimeout = null, currentLineIdx = 0, currentCharIdx = 0, activeLineEl = null;
+
+function runTerminalLoop() {
+  clearTimeout(termTimeout);
+  if (currentLineIdx >= terminalScript.length) {
+    termStatus.textContent = "STATUS: CYCLE_COMPLETE (RESTARTING)";
+    termTimeout = setTimeout(function () {
+      terminalLinesContainer.innerHTML = '';
+      currentLineIdx = 0; currentCharIdx = 0; activeLineEl = null;
+      termStatus.textContent = "STATUS: EXECUTING_PIPELINE";
+      runTerminalLoop();
+    }, 1200);
+    return;
+  }
+  var item = terminalScript[currentLineIdx];
+  if (currentCharIdx === 0) {
+    activeLineEl = document.createElement('div');
+    activeLineEl.className = item.color + ' font-mono';
+    terminalLinesContainer.appendChild(activeLineEl);
+  }
+  currentCharIdx++;
+  activeLineEl.textContent = item.text.slice(0, currentCharIdx);
+  var cur = document.createElement('span');
+  cur.className = 'cursor-blink inline-block w-2 h-3.5 bg-accent align-middle ml-1';
+  activeLineEl.appendChild(cur);
+  if (currentCharIdx < item.text.length) {
+    termTimeout = setTimeout(runTerminalLoop, item.text.charAt(0) === '$' ? 28 : 16);
+  } else {
+    if (currentLineIdx < terminalScript.length - 1) activeLineEl.textContent = item.text;
+    currentLineIdx++; currentCharIdx = 0;
+    termTimeout = setTimeout(runTerminalLoop, item.delayAfter);
+  }
+}
+function restartTerminal() {
+  clearTimeout(termTimeout);
+  terminalLinesContainer.innerHTML = '';
+  currentLineIdx = 0; currentCharIdx = 0; activeLineEl = null;
+  termStatus.textContent = "STATUS: REPLAYING_PIPELINE";
+  runTerminalLoop();
+}
+runTerminalLoop();
+
+// ZeroTrace flow diagram (lives inside the ZeroTrace popup)
+var flowStates = [
+  { stageTitle: "STAGE 01: CLIENT_SIDE_ENCRYPTION", httpBadge: "WebCrypto.subtle.encrypt()", browserState: "Plaintext -> AES-GCM",
+    wireText: "> Key = 256-bit random | Ciphertext = '8f9a2b7c...' (Encrypted in Browser)", activeNode: "browser",
+    redisId: "id: (awaiting POST)", redisVal: "cipher: null", redisTtl: "TTL: --", redisFooter: "Idle / Ready",
+    highlightPost: false, highlightGet: false, highlightRedis: false, isDestroyed: false },
+  { stageTitle: "STAGE 02: CIPHERTEXT_INGESTION", httpBadge: "POST /message (200 OK)", browserState: "Sent Ciphertext Only",
+    wireText: "> POST /message {'ciphertext': '8f9a2b7c...'} -> Redis SETEX (TTL: 3600s)", activeNode: "fastapi",
+    redisId: "id: '7x9K2m'", redisVal: "cipher: '8f9a2b7c...'", redisTtl: "TTL: 3600s (1 hr)", redisFooter: "Ciphertext Stored in RAM",
+    highlightPost: true, highlightGet: false, highlightRedis: true, isDestroyed: false },
+  { stageTitle: "STAGE 03: ZERO_KNOWLEDGE_LINK", httpBadge: "/view.html?id=7x9K2m#key", browserState: "Link Ready (#key local)",
+    wireText: "> Link shared: /view.html?id=7x9K2m#K9xM2... (Server never receives #fragment)", activeNode: "browser",
+    redisId: "id: '7x9K2m'", redisVal: "cipher: '8f9a2b7c...'", redisTtl: "TTL: 3592s ticking...", redisFooter: "Waiting for Reveal Click",
+    highlightPost: false, highlightGet: false, highlightRedis: false, isDestroyed: false },
+  { stageTitle: "STAGE 04: ATOMIC_GETDEL_EXECUTION", httpBadge: "GET /message/7x9K2m -> GETDEL", browserState: "Revealing & Decrypting...",
+    wireText: "> Receiver clicked Reveal -> Redis executes atomic GET + DELETE in one step", activeNode: "redis",
+    redisId: "id: '7x9K2m' [DELETED]", redisVal: "cipher: [DELETED]", redisTtl: "TTL: 0s (DELETED)", redisFooter: "ATOMIC GETDEL TRIGGERED",
+    highlightPost: false, highlightGet: true, highlightRedis: true, isDestroyed: true },
+  { stageTitle: "STAGE 05: SELF_DESTRUCT_VERIFIED", httpBadge: "2nd GET -> 404 Not Found", browserState: "Decrypted locally",
+    wireText: "> Subsequent GET /message/7x9K2m returns HTTP 404 Not Found.", activeNode: "redis",
+    redisId: "KEY NOT FOUND", redisVal: "nothing stored", redisTtl: "HTTP 404 Returned", redisFooter: "Single-Read Verified",
+    highlightPost: false, highlightGet: true, highlightRedis: false, isDestroyed: true }
+];
+var currentFlowStep = 0, flowInterval = null, isFlowPlaying = true;
+var CHIP_ON = "flow-step-btn px-3 py-1.5 rounded-lg border border-accent bg-surfaceHighlight text-paper font-mono text-[11px] font-bold transition-all";
+var CHIP_OFF = "flow-step-btn px-3 py-1.5 rounded-lg border border-white/10 bg-ink/40 text-white/60 hover:text-paper hover:border-white/25 font-mono text-[11px] transition-all";
+
+function selectFlowStep(stepIndex, pausedByUser) {
+  if (!document.getElementById('svg-stage-title')) return;
+  if (pausedByUser && isFlowPlaying) toggleFlowAutoPlay(false);
+  currentFlowStep = stepIndex;
+  var state = flowStates[stepIndex];
+  document.querySelectorAll('.flow-step-btn').forEach(function (btn, idx) {
+    var badge = btn.querySelector('.step-badge');
+    btn.className = idx === stepIndex ? CHIP_ON : CHIP_OFF;
+    badge.className = 'step-badge ' + (idx === stepIndex ? 'text-accent' : 'text-white/40');
+  });
+  document.getElementById('svg-stage-title').textContent = state.stageTitle;
+  document.getElementById('svg-http-badge').textContent = state.httpBadge;
+  document.getElementById('svg-browser-state').textContent = state.browserState;
+  document.getElementById('wire-step-counter').textContent = 'STEP ' + (stepIndex + 1) + ' OF 5';
+  document.getElementById('wire-payload-text').textContent = state.wireText;
+  document.getElementById('redis-slot-id').textContent = state.redisId;
+  document.getElementById('redis-slot-val').textContent = state.redisVal;
+  document.getElementById('redis-slot-ttl').textContent = state.redisTtl;
+  document.getElementById('redis-footer-status').textContent = state.redisFooter;
+
+  var rectBrowser = document.getElementById('rect-browser'), rectFastapi = document.getElementById('rect-fastapi'),
+      rectRedis = document.getElementById('rect-redis'), slot = document.getElementById('redis-slot-box');
+  rectBrowser.setAttribute('stroke', state.activeNode === 'browser' ? '#FFB020' : '#2D3834');
+  rectFastapi.setAttribute('stroke', state.activeNode === 'fastapi' ? '#FFB020' : '#2D3834');
+  if (state.isDestroyed) {
+    rectRedis.setAttribute('stroke', '#EF4444'); slot.setAttribute('stroke', '#EF4444'); slot.setAttribute('fill', '#2A1215');
+    document.getElementById('svg-stage-dot').className = "w-2.5 h-2.5 rounded-full bg-red-500 animate-ping";
+  } else {
+    rectRedis.setAttribute('stroke', state.activeNode === 'redis' ? '#FFB020' : '#2D3834');
+    slot.setAttribute('stroke', state.highlightRedis ? '#FFB020' : '#2D3834'); slot.setAttribute('fill', '#1C2421');
+    document.getElementById('svg-stage-dot').className = "w-2.5 h-2.5 rounded-full bg-accent";
+  }
+  var linePost = document.getElementById('line-post'), lineGet = document.getElementById('line-get'), lineRedis = document.getElementById('line-redis');
+  linePost.setAttribute('stroke', state.highlightPost ? '#FFB020' : '#374151');
+  linePost.setAttribute('class', state.highlightPost ? 'flow-dash' : '');
+  lineGet.setAttribute('stroke', state.highlightGet ? (state.isDestroyed ? '#EF4444' : '#FFB020') : '#374151');
+  lineGet.setAttribute('class', state.highlightGet ? 'flow-dash' : '');
+  lineRedis.setAttribute('stroke', state.highlightRedis ? '#FFB020' : '#374151');
+  lineRedis.setAttribute('class', state.highlightRedis ? 'flow-dash' : '');
+}
+function toggleFlowAutoPlay(forceState) {
+  isFlowPlaying = typeof forceState === 'boolean' ? forceState : !isFlowPlaying;
+  var btnText = document.getElementById('sim-btn-text'), indicator = document.getElementById('sim-indicator');
+  if (isFlowPlaying) {
+    if (btnText) btnText.textContent = "Auto-Cycling (Pause)";
+    if (indicator) indicator.className = "w-2 h-2 rounded-full bg-accent animate-ping";
+    startFlowLoop();
+  } else {
+    if (btnText) btnText.textContent = "Resume Auto-Cycle";
+    if (indicator) indicator.className = "w-2 h-2 rounded-full bg-white/40";
+    clearInterval(flowInterval);
+  }
+}
+function startFlowLoop() {
+  clearInterval(flowInterval);
+  flowInterval = setInterval(function () { selectFlowStep((currentFlowStep + 1) % flowStates.length, false); }, 3200);
+}
+
+// Project modal content
+var REPO = "https://github.com/dalviprathamesh32-dev/";
+var projectDetails = {
+  zerotrace: {
+    badge: "v1 Open Source • FastAPI + Redis + WebCrypto",
+    title: "ZeroTrace: Self-Destructing Encrypted Messages",
+    html: '' +
+      '<p class="text-white/75 leading-relaxed"><strong>ZeroTrace</strong> is a zero-knowledge web app for sharing a message once. Encryption happens in the sender’s browser using the native <strong>WebCrypto API (AES-256-GCM)</strong> before anything touches the network.</p>' +
+      '<div class="flex flex-wrap gap-3 pt-2">' +
+        '<a href="' + REPO + 'ZeroTrace" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-lg bg-accent text-ink font-heading font-bold text-xs sm:text-sm hover:bg-amber-400 transition-colors">View Source on GitHub &nearr;</a>' +
+        '<span class="px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white/50 font-mono text-xs flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-accent"></span>Live deployment: v2 in progress (rate limiting &amp; CSP)</span>' +
+      '</div>' +
+      '<div><div class="text-xs font-mono text-accent uppercase tracking-widest mb-3">// Interactive System Walkthrough</div><div id="flow-slot"></div></div>' +
+      '<div class="pt-2"><h3 class="text-lg font-heading font-bold mb-4 text-accent">5-Stage Lifecycle</h3>' +
+        '<div class="space-y-4 border-l-2 border-accent/40 ml-3 pl-6 relative">' +
+          step('1. Client-Side Key Generation &amp; AES-GCM', 'The browser generates a random 256-bit key and encrypts the message locally. Plaintext never leaves the device.') +
+          step('2. Ephemeral Redis Storage (1-Hour TTL)', 'Only ciphertext is sent via <code class="text-accent font-mono">POST /message</code> (validated up to 20,000 chars) and stored in Redis with an automatic 1-hour expiry.') +
+          step('3. URL #Fragment Key Isolation', 'The link looks like <code class="text-accent font-mono">/view.html?id=&lt;id&gt;#&lt;key&gt;</code>. Because the key sits after <code class="text-accent font-mono">#</code>, browsers never send it in HTTP requests.') +
+          step('4. Anti-Bot Reveal &amp; Atomic GET + DELETE', 'A deliberate <strong>Reveal</strong> button stops Slack/WhatsApp link-preview bots from burning the message on page load. Clicking it triggers an atomic Redis fetch-and-delete.') +
+          step('5. Pytest Verified (6/6 Passing)', 'Tested with an in-memory fake Redis: message creation, single-read deletion, 404 on second read, unknown IDs, and empty/oversize payload rejection.', true) +
+        '</div></div>' +
+      '<div class="bg-ink/80 border border-white/10 rounded-xl p-5 space-y-3"><div class="text-xs font-mono text-accent uppercase">Threat Model &amp; Honest Limitations</div>' +
+        '<div class="grid md:grid-cols-2 gap-x-8 gap-y-2 text-xs text-white/65 leading-relaxed">' +
+          '<p><strong class="text-paper">Protects against:</strong> a database or Redis leak (only ciphertext is stored) and messages lingering after they’re read.</p>' +
+          '<p><strong class="text-paper">Link possession:</strong> anyone with the full link, <code class="text-accent font-mono">#key</code> included, can read the message once.</p>' +
+          '<p><strong class="text-paper">You trust the served JavaScript:</strong> a compromised server or an XSS bug could steal the key. Strict CSP and zero third-party scripts reduce this, not remove it.</p>' +
+          '<p><strong class="text-paper">Metadata is visible:</strong> the server still sees IP address, message size and timing. It’s not anonymity.</p>' +
+          '<p><strong class="text-paper">Not forensic-grade deletion:</strong> Redis may persist to disk depending on config.</p>' +
+          '<p><strong class="text-paper">v1 isn’t a public service yet:</strong> rate limiting, CSP headers and hardened Redis are on the v2 list.</p>' +
+        '</div></div>'
+  },
+  trustlayer: {
+    badge: "Smart India Hackathon (SIH26228) • Full Prototype",
+    title: "TrustLayer-CV: Integrity & Provenance for CV Pipelines",
+    html: '' +
+      '<p class="text-white/75 leading-relaxed">Built the complete prototype (FastAPI backend, React UI and demo) for Smart India Hackathon problem statement <strong>SIH26228</strong>. Computer vision pipelines can be attacked through swapped inputs, substituted or backdoored models, and poisoned training data. TrustLayer-CV makes those changes detectable, fully offline.</p>' +
+      '<div class="grid sm:grid-cols-2 gap-4">' +
+        card('Signed Provenance Receipts', 'Each inference produces a canonical-JSON receipt binding input, model, config and output, signed with <strong>Ed25519</strong>. A nonce table blocks replayed receipts.') +
+        card('Hash-Chained Ledger', 'An append-only SQLite ledger chains each record’s SHA-256 hash to the previous one and is signed, so edits or deletions break the chain and are detectable.') +
+        card('Model Integrity Checks', 'Compares the model’s SHA-256 digest to a trusted registry, then runs a behavioral fingerprint and a backdoor trigger probe to catch substitution.') +
+        card('Dataset Poisoning Signals', 'Flags label inconsistencies, near-duplicates and out-of-distribution samples, then aggregates risk per contributor.') +
+      '</div>' +
+      '<p class="text-xs text-white/55 leading-relaxed">Includes a tamper-simulation sandbox (alter input, swap model, change output, replay a receipt) and a 22-test pytest suite. It detects tampering inside its protected boundary; it doesn’t prevent it.</p>' +
+      '<div class="pt-2"><a href="' + REPO + 'SIH26228-TrustLayer-CV" target="_blank" rel="noopener noreferrer" class="inline-flex px-4 py-2.5 rounded-lg bg-accent text-ink font-heading font-bold text-xs sm:text-sm hover:bg-amber-400 transition-colors">Explore Repository on GitHub &nearr;</a></div>'
+  },
+  vajra: {
+    badge: "Smart India Hackathon (SIH26106) • Team Build, Backend",
+    title: "VAJRA: Email Threat & Forensic Intelligence Platform",
+    html: '' +
+      '<p class="text-white/75 leading-relaxed">VAJRA is a four-person team build for Smart India Hackathon problem statement <strong>SIH26106</strong>. I contributed to the FastAPI backend. It ingests suspicious <code class="text-accent font-mono">.eml</code>/<code class="text-accent font-mono">.msg</code> emails and turns them into forensic intelligence, entirely in memory.</p>' +
+      '<div class="grid sm:grid-cols-2 gap-4">' +
+        card('Header &amp; Hop Forensics', 'Parses raw headers to reconstruct the MTA routing path, checks SPF/DKIM/DMARC authentication and flags spoofing patterns.') +
+        card('GeoIP &amp; Threat Context', 'Maps hop origins with local MaxMind GeoIP databases and a Tor exit-node list; scores risk with explainable, rule-based signals.') +
+        card('Zero-Database Design', 'Cases live in a bounded in-memory queue with an on-demand wipe, so no email payload is written to disk.') +
+        card('Offline-First AI Explanations', 'DLP masking runs before any text reaches an LLM. Falls back from cloud to local Ollama to a deterministic rule engine, so it still works air-gapped.') +
+      '</div>' +
+      '<div class="pt-2"><a href="' + REPO + 'SIH26106-Vajra" target="_blank" rel="noopener noreferrer" class="inline-flex px-4 py-2.5 rounded-lg bg-accent text-ink font-heading font-bold text-xs sm:text-sm hover:bg-amber-400 transition-colors">Explore Repository on GitHub &nearr;</a></div>'
+  }
+};
+function step(title, text, green) {
+  return '<div class="relative"><span class="w-3.5 h-3.5 rounded-full ' + (green ? 'bg-emerald' : 'bg-accent') + ' border-2 border-ink absolute -left-[31px] top-1.5"></span>' +
+    '<h4 class="font-heading font-bold text-paper">' + title + '</h4><p class="text-xs sm:text-sm text-white/60 mt-1">' + text + '</p></div>';
+}
+function card(title, text) {
+  return '<div class="bg-ink/70 border border-white/10 rounded-xl p-4"><h4 class="font-mono text-xs text-accent uppercase mb-2">' + title + '</h4><p class="text-xs text-white/65 leading-relaxed">' + text + '</p></div>';
+}
+function openProjectModal(key) {
+  var data = projectDetails[key];
+  if (!data) return;
+  clearInterval(flowInterval);
+  document.getElementById('modal-badge').textContent = data.badge;
+  document.getElementById('modal-title').textContent = data.title;
+  document.getElementById('modal-body').innerHTML = data.html;
+  document.getElementById('project-modal-box').scrollTop = 0;
+  if (key === 'zerotrace') {
+    document.getElementById('flow-slot').innerHTML = document.getElementById('flow-template').innerHTML;
+    isFlowPlaying = true;
+    selectFlowStep(0, false);
+    startFlowLoop();
+  }
+  var modal = document.getElementById('project-modal'), box = document.getElementById('project-modal-box');
+  document.body.style.overflow = 'hidden';
+  modal.classList.remove('hidden'); modal.classList.add('flex');
+  setTimeout(function () { modal.classList.remove('opacity-0'); box.classList.remove('scale-95'); box.classList.add('scale-100'); }, 15);
+}
+function closeProjectModal() {
+  clearInterval(flowInterval);
+  var modal = document.getElementById('project-modal'), box = document.getElementById('project-modal-box');
+  modal.classList.add('opacity-0'); box.classList.remove('scale-100'); box.classList.add('scale-95');
+  setTimeout(function () { modal.classList.remove('flex'); modal.classList.add('hidden'); document.body.style.overflow = ''; }, 250);
+}
+
+// Toast + copy email
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  document.getElementById('toast-message').textContent = msg;
+  toast.classList.remove('translate-y-20', 'opacity-0');
+  setTimeout(function () { toast.classList.add('translate-y-20', 'opacity-0'); }, 2600);
+}
+function copyEmail() {
+  var email = "dalviprathamesh32@gmail.com";
+  function fallback() {
+    var t = document.createElement('textarea');
+    t.value = email; document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(t);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(email).catch(fallback);
+  } else { fallback(); }
+  showToast("Copied: " + email);
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeProjectModal(); });
+</script>
+</body>
+</html>
